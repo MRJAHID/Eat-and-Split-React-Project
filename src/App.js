@@ -1,4 +1,5 @@
 import './App.css';
+import {useState} from "react";
 
 const initialFriends = [
     {
@@ -20,13 +21,26 @@ const initialFriends = [
         balance: 0,
     },
 ];
+
+function Button({children, onClick}) {
+    return <button onClick={onClick} className='button'>{children}</button>
+}
+
 export default function App() {
+    const [showAddFriend, setShowAddFriend] = useState(false);
+
+    function handleShowAddFriend() {
+        setShowAddFriend(show => !show);
+    }
+
     return (
         <div className="app">
             <div className="sidebar">
                 <FriendsList/>
-                <FormAddFriend/>
-                <Button>Add Friend</Button>
+                {
+                    showAddFriend && <FormAddFriend/>
+                }
+                <Button onClick={handleShowAddFriend}>{showAddFriend ? 'Close' : 'Add Friend'}</Button>
             </div>
 
             <FormSplitBill/>
@@ -38,13 +52,13 @@ function FriendsList() {
     const friends = initialFriends;
 
     return <ul>
-        {friends.map(friend => <Friend key={friend.id} friend={friend} />)}
+        {friends.map(friend => <Friend key={friend.id} friend={friend}/>)}
     </ul>
 }
 
 function Friend({friend}) {
     return <li>
-        <img src={friend.image} alt={friend.name} />
+        <img src={friend.image} alt={friend.name}/>
         <h2>{friend.name}</h2>
         {friend.balance < 0 && <p className='red'>You Owe {friend.name} ${Math.abs(friend.balance)}</p>}
         {friend.balance > 0 && <p className='green'>{friend.name} Owes You ${Math.abs(friend.balance)}</p>}
@@ -54,9 +68,6 @@ function Friend({friend}) {
     </li>
 }
 
-function Button({children}){
-    return <button className='button'>{children}</button>
-}
 
 function FormAddFriend() {
     return <form className='form-add-friend'>
